@@ -1,0 +1,67 @@
+// src/components/Product.js
+import React from 'react';
+
+const Product = ({ product, onAddToCart }) => {
+  return (
+    <div className="product">
+      <img src={product.image} alt={product.name} />
+      <h3>{product.name}</h3>
+      <p>${product.price}</p>
+      <button onClick={() => onAddToCart(product)}>Add to Cart</button>
+    </div>
+  );
+};
+
+export default Product;
+
+// src/components/ProductList.js
+import React from 'react';
+import Product from './Product';
+
+const ProductList = ({ products, onAddToCart }) => {
+  return (
+    <div className="product-list">
+      {products.map((product) => (
+        <Product key={product.id} product={product} onAddToCart={onAddToCart} />
+      ))}
+    </div>
+  );
+};
+
+export default ProductList;
+
+// src/pages/Home.js
+import React, { useState } from 'react';
+import ProductList from '../components/ProductList';
+
+const Home = () => {
+  const [cart, setCart] = useState([]);
+  const [products] = useState([
+    {
+      id: 1,
+      name: 'Product 1',
+      price: 20.0,
+      image: 'product1.jpg',
+    },
+    {
+      id: 2,
+      name: 'Product 2',
+      price: 25.0,
+      image: 'product2.jpg',
+    },
+    // Add more products
+  ]);
+
+  const handleAddToCart = (product) => {
+    setCart([...cart, product]);
+  };
+
+  return (
+    <div className="home">
+      <h1>Welcome to the E-Commerce Store</h1>
+      <ProductList products={products} onAddToCart={handleAddToCart} />
+    </div>
+  );
+};
+
+export default Home;
