@@ -1,0 +1,68 @@
+// src/db.js
+const mongoose = require('mongoose');
+
+const mongoURI = 'mongodb://localhost/your-database-name';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
+
+// src/models/Product.js
+const mongoose = require('mongoose');
+
+const productSchema = new mongoose.Schema({
+  name: String,
+  price: Number,
+  description: String,
+  // Add more fields as needed
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+module.exports = Product;
+
+// src/routes/products.js
+const express = require('express');
+const router = express.Router();
+const Product = require('../models/Product');
+
+// Get a list of products
+router.get('/', async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get product details by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
+// src/server.js
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+const db = require('./db');
+const productRoutes = require('./routes/products');
+
+app.use('/api/products', productRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

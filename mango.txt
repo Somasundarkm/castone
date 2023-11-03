@@ -1,0 +1,49 @@
+// Create a new product
+const newProduct = new Product({
+  name: 'Product Name',
+  description: 'Product Description',
+  price: 49.99,
+  image: 'product.jpg',
+  category: 'Electronics',
+});
+
+newProduct.save();
+
+// Create a new user
+const newUser = new User({
+  username: 'john_doe',
+  email: 'john@example.com',
+  password: 'hashed_password',
+});
+
+newUser.save();
+
+// Create a new order
+const newOrder = new Order({
+  user: newUser._id,
+  items: [
+    { product: newProduct._id, quantity: 2 },
+    // Add more items
+  ],
+  totalPrice: 99.98,
+  status: 'Pending',
+});
+
+newOrder.save();
+
+// Retrieve all products
+const products = Product.find();
+
+// Retrieve a user's orders
+const userOrders = Order.find({ user: newUser._id });
+
+// Add a review for a product
+const newReview = new Review({
+  product: newProduct._id,
+  user: newUser._id,
+  rating: 4,
+  comment: 'Great product!',
+});
+
+
+
